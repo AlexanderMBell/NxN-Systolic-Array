@@ -2,7 +2,7 @@
 
 A parameterized NxN systolic array for signed 8-bit matrix multiplication, designed and implemented in SystemVerilog. The array multiplies two NxN matrices using a grid of N² processing elements (PEs), each built around a multiply-accumulate (MAC) unit. A single parameter, `N`, sets the array size.
 
-All of the arithmetic in the datapath is built from my own full-adder and ripple-carry adder modules. That includes the signed 8-bit multiplier, which is a shift-and-add design rather than Verilog's built-in `*` operator.
+The datapath's additions are built from my own full-adder and ripple-carry adder modules, and the signed 8-bit multiplier is a shift-and-add design rather than Verilog's built-in `*` operator. The one exception is the `+ 1` used to negate the multiplier's final partial product.
 
 This project builds on my previous [8-bit ALU](https://github.com/AlexanderMBell/8-bit-ALU-Verilog) and is my first sequential, clocked digital design.
 
@@ -95,10 +95,16 @@ The last multiply-accumulate happens at PE(N−1, N−1) on cycle 3(N − 1), so
 | `MAC.sv` | `mac` | Multiply-accumulate unit with 32-bit accumulator |
 | `PE.sv` | `pe` | Processing element: MAC plus pass-through registers |
 | `NbyN_Systolic_Array.sv` | `nxn_systolic_array` | Parameterized top-level NxN array |
+| `sig_mult_8bit_tb.sv` | `sig_mult_8bit_tb` | Exhaustive signed multiplier testbench |
 | `MAC_tb.sv` | `mac_tb` | MAC testbench |
 | `pe_tb.sv` | `pe_tb` | PE testbench |
+| `array_tb.sv` | `array_tb` | Parameterized full-array testbench |
 
 ## Verification
+
+### Signed Multiplier: Exhaustive Testing
+
+The multiplier testbench applies all 65,536 signed 8-bit input pairs (−128 to 127 for each input) and compares every product against the expected result. All 65,536 products are correct, including the edge case −128 × −128 = 16,384.
 
 ### MAC and PE: Directed Testing
 
@@ -109,18 +115,27 @@ The MAC and PE testbenches apply a sequence of inputs and check the accumulated 
 - Clearing the accumulator with `clear`
 - Forwarding `A` and `B` to the PE outputs one cycle later
 
+### Full Array: Reference-Model Testing
+
+The array testbench is parameterized by the same `N` as the design, so one value sets the size of the array, the edge inputs, the matrices, and the test. It:
+1. Fills the input matrices `A` and `B`
+2. Computes the expected result with a textbook triple-loop matrix multiply
+3. Generates the skewed input schedule automatically: on cycle *t*, row *i* receives `A[i][t − i]` and column *j* receives `B[t − j][j]`, or zero when that index is out of range
+4. Runs the 3N − 2 cycle computation and compares all N² outputs against the expected result
+
+The array matches the reference result for all N² outputs at N = 2, N = 4, and N = 8.
+
 ### In Progress
 
-- [ ] **Signed multiplier:** exhaustive testing of all 65,536 signed 8-bit input pairs against the expected product
-- [ ] **Full array:** a testbench that generates the skewed input schedule, runs a full NxN multiplication, and compares all N² outputs against a reference result, including identity, zero, mixed-sign, maximum-magnitude, and randomized matrices
-- [ ] **Multiple sizes:** repeat the full-array tests across several values of `N`
+- [ ] **Randomized matrices:** run many randomized signed matrix multiplications, clearing the accumulators between runs
+- [ ] **Edge cases:** identity, zero, and maximum-magnitude (−128) matrices
 
 ## Running the Project
 
 1. Open the source files in a simulator that supports SystemVerilog (the top-level module uses packed multidimensional arrays).
 2. Include all design files: `full_adder.sv`, `adder_16bit.sv`, `adder_32bit.sv`, `sig_mult_8bit.sv`, `MAC.sv`, and `PE.sv`, plus `NbyN_Systolic_Array.sv` for the full array.
-3. Include `MAC_tb.sv` or `pe_tb.sv` as the testbench.
-4. Select `mac_tb` or `pe_tb` as the simulation top-level module.
+3. Include the testbench you want to run: `sig_mult_8bit_tb.sv`, `MAC_tb.sv`, `pe_tb.sv`, or `array_tb.sv`.
+4. Select that testbench as the simulation top-level module. For `array_tb`, set `parameter N` at the top of the file to choose the array size.
 5. Run the simulation and inspect the printed results.
 
 ## What I Learned
@@ -142,7 +157,7 @@ Most importantly, this project showed me how the matrix multiplication at the co
 
 ## Next Steps
 
-My immediate next step is finishing the multiplier and full-array testbenches and verifying the array across multiple sizes.
+My immediate next step is finishing the full-array verification by adding randomized and edge-case matrix tests.
 
 After that, possible extensions include:
 
