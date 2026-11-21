@@ -1,11 +1,17 @@
 `timescale 1ns / 1ps
 
-module pe (clk, rst, valid, clear, A_in, B_in, A_out, B_out, acc);
-
-input clk, rst, valid, clear;
-input [7:0] A_in, B_in;
-output reg [7:0] A_out, B_out;
-output [31:0] acc;
+module pe
+(
+ input logic         clk,
+ input logic         rst,
+ input logic         valid,
+ input logic         clear,
+ input logic [7:0]   A_in,
+ input logic [7:0]   B_in,
+ output logic [7:0]  A_out,
+ output logic [7:0]  B_out,
+ output logic [31:0] acc
+);
 
 mac inst (
     .clk(clk),

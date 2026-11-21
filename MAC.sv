@@ -1,12 +1,18 @@
-module mac (clk, rst, valid, clear, A, B, acc);
-  
-  input clk, rst, valid, clear;
-  input [7:0] A, B;
-  output reg [31:0] acc;
-  wire [15:0] O;
-  wire [31:0] O_ext;
-  wire [32:0] sum;
-  
+module mac 
+(
+ input logic         clk,
+ input logic         rst,
+ input logic         valid,
+ input logic         clear,
+ input logic [7:0]   A,
+ input logic [7:0]   B,
+ output logic [31:0] acc
+);
+
+  logic [15:0] O;
+  logic [31:0] O_ext;
+  logic [32:0] sum;
+
   //Multiply
   sig_mult_8bit mult (
     .A(A),

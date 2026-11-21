@@ -1,14 +1,13 @@
 `timescale 1ns / 1ps
 
-//16-bit Addition Module
-module adder_16bit (a, b, ans);
+module adder_16bit
+(
+ input logic [15:0]  a,
+ input logic [15:0]  b,
+ output logic [16:0] ans
+);
 
-  // I/Os
-  input[15:0] a;
-  input[15:0] b;
-  output[16:0] ans;
-
-  wire[16:0] carry;
+  logic [16:0] carry;
 
   assign carry[0] = 0;
 

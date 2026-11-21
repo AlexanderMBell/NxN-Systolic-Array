@@ -1,18 +1,16 @@
 `timescale 1ns / 1ps
 
-//Full-Adder Module (standalone)
-module full_adder (input_1, input_2, c_in, s_2, c_2);
+module full_adder
+(
+ input logic  input_1,
+ input logic  input_2,
+ input logic  c_in,
+ output logic s_2,
+ output logic c_2
+);
 
-  // I/O
-  input input_1;
-  input input_2;
-  input c_in;
-  output s_2;
-  output c_2;
-
-  //Variables
-  wire c_i;
-  wire s_i;
+  logic c_i;
+  logic s_i;
 
   //Intermediate Sum/Carry
   assign s_i = input_1 ^ input_2;

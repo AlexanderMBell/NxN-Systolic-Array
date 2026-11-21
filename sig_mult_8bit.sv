@@ -1,22 +1,22 @@
-module sig_mult_8bit (A, B, O);
+module sig_mult_8bit
+(
+ input logic [7:0]   A,
+ input logic [7:0]   B,
+ output logic [15:0] O
+);
+
+  logic [15:0] A_ext = {{8{A[7]}},A};
+  logic [15:0] R0 = (A_ext & {16{B[0]}}) << 0;
+  logic [15:0] R1 = (A_ext & {16{B[1]}}) << 1;
+  logic [15:0] R2 = (A_ext & {16{B[2]}}) << 2;
+  logic [15:0] R3 = (A_ext & {16{B[3]}}) << 3;
+  logic [15:0] R4 = (A_ext & {16{B[4]}}) << 4;
+  logic [15:0] R5 = (A_ext & {16{B[5]}}) << 5;
+  logic [15:0] R6 = (A_ext & {16{B[6]}}) << 6;
+  logic [15:0] R7_pos = (A_ext & {16{B[7]}}) << 7;
+  logic [15:0] R7 = ~R7_pos + 16'd1;
+  logic [16:0] sum1, sum2, sum3, sum4, sum5, sum6, sum7;
   
-  input [7:0] A, B;
-  output [15:0] O;
-  
-  wire[15:0] A_ext = {{8{A[7]}},A};
-  
-  wire[15:0] R0 = (A_ext & {16{B[0]}}) << 0;
-  wire[15:0] R1 = (A_ext & {16{B[1]}}) << 1;
-  wire[15:0] R2 = (A_ext & {16{B[2]}}) << 2;
-  wire[15:0] R3 = (A_ext & {16{B[3]}}) << 3;
-  wire[15:0] R4 = (A_ext & {16{B[4]}}) << 4;
-  wire[15:0] R5 = (A_ext & {16{B[5]}}) << 5;
-  wire[15:0] R6 = (A_ext & {16{B[6]}}) << 6;
-  wire[15:0] R7_pos = (A_ext & {16{B[7]}}) << 7;
-  wire[15:0] R7 = ~R7_pos + 16'd1;
-  
-  wire[16:0] sum1, sum2, sum3, sum4, sum5, sum6, sum7;
-	
   adder_16bit add1 (.a(R0), .b(R1), .ans(sum1));
   adder_16bit add2 (.a(sum1[15:0]), .b(R2), .ans(sum2));
   adder_16bit add3 (.a(sum2[15:0]), .b(R3), .ans(sum3));
