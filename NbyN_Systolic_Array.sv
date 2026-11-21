@@ -1,3 +1,4 @@
+//Within this module, all PE's will be instantiated and wires that connect every input to every output will be made and linked.
 module nxn_systolic_array #(parameter N = 4)(clk, valid, rst, clear, a, b , c);
 
 input clk, valid, rst, clear;
@@ -6,12 +7,13 @@ input [N-1:0][7:0] a,b;
 //c represents every bit of every resulting value at each row & column
 output [N-1:0][N-1:0][31:0] c;
 
-//Declare every wire for the array:
 
-//a represents row, N rows so [0,1...N-1], but edge wires on R/L so [0,1...N] column wires.
+//Wire Creation: A values come in from the left side, B values come in from the top side.
+//Create all a value wires: For N=4, we need 4 rows ([0:N-1]) and 5 columns for edges ([0:N]).
 wire [7:0] a_wire[0:N-1][0:N];
-//b represents column, N columns so [0,1...N-1], but edge wires on T/B so [0,1...N] row wires.
+//Create all b value wires for N=4, we need 5 rows for edges ([0:N]) and 4 columns ([0:N-1]).
 wire [7:0] b_wire[0:N][0:N-1];
+
 
 genvar i,j;
 generate 
