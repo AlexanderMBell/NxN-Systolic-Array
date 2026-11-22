@@ -30,37 +30,49 @@ module mac_tb;
     @(negedge clk);
     rst = 0;
 
-    //Test 1: 2 * 3
+    //Cycle 1: 2 * 3
     valid = 1;
     A = 2;
     B = 3;
     @(negedge clk);
-    $display("2*3 = (6) %0d",acc);
+    $display("acc (0) %0d",acc);
 
-    //Test 2: -4 * 5
+    //Cycle 2: -4 * 5
     A = -4;
     B = 5;
     @(negedge clk);
-    $display("-4*5 = (-14) %0d",acc);
+    $display("2*3 = (6) %0d",acc);
 
-    //Test 3: -3 * -6
+    //Cycle 3: -3 * -6
     A = -3;
     B = -6;
     @(negedge clk);
-    $display ("-3*-6= (4) %0d",acc);
+    $display("-4*5 = (-14) %0d",acc);
 
-    //Test 4: valid off
+    //Cycle 4: valid off
     valid = 0;
     A = 9;
     B = 9;
     @(negedge clk);
+    $display ("-3*-6= (4) %0d",acc);
+    
+    //Cycle 5:
+    @(negedge clk);
     $display ("acc = (4) %0d",acc);
 
-    //Test clear:
+    //Cycle 6: clear
+    valid = 1;
     clear = 1;
     @(negedge clk);
     $display ("acc = (0) %0d",acc);
-
+    
+    //Cycle 7: 
+    clear = 0;
+    A = 0;
+    B = 0;
+    @(negedge clk);
+    $display("acc = (0) %0d",acc);
     $finish;
+    
   end 
 endmodule

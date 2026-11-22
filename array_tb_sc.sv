@@ -57,7 +57,7 @@ task run_array();
 
  //Setting values at the negedge, while the instantiated array module runs calcs at the posedge.
  //Feed the skewed inputs: 3N-2 cycles
-    for (int t = 0; t < 3*N-2; t++) begin 
+    for (int t = 0; t < 3*N-1; t++) begin 
       for (int i = 0; i < N; i++)
       //a is 0 when it hasnt reached its turn or has done all its work
       //else a is set value when it has reached its turn and hasnt done its work

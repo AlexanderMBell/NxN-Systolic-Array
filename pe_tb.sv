@@ -53,6 +53,10 @@ B_in = 7;
 @(negedge clk);
 $display("After 9,7 V=0: A_out = %d0, B_out = %d0 and acc = %d0", A_out, B_out, acc);
 
+//Cycle 4: (pipeline) one more cycle with valid off, so the 9*7 from cycle 3 must not be added
+@(negedge clk);
+$display("After extra cycle V=0: A_out = %d0, B_out = %d0 and acc = %d0", A_out, B_out, acc);
+
 //Reset end
 rst = 1;
 @(negedge clk);
