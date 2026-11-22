@@ -34,17 +34,24 @@ module sig_mult_8bit
   
   logic [15:0] R7;
   assign R7 = ~R7_pos + 16'd1;
+
+  logic [16:0] sum01, sum23, sum45, sum67, sum0123, sum4567, sumF;
   
-  logic [16:0] sum1, sum2, sum3, sum4, sum5, sum6, sum7;
+  //Group Independent adders to reduce timing
   
-  adder_16bit add1 (.a(R0), .b(R1), .ans(sum1));
-  adder_16bit add2 (.a(sum1[15:0]), .b(R2), .ans(sum2));
-  adder_16bit add3 (.a(sum2[15:0]), .b(R3), .ans(sum3));
-  adder_16bit add4 (.a(sum3[15:0]), .b(R4), .ans(sum4));
-  adder_16bit add5 (.a(sum4[15:0]), .b(R5), .ans(sum5));
-  adder_16bit add6 (.a(sum5[15:0]), .b(R6), .ans(sum6));
-  adder_16bit add7 (.a(sum6[15:0]), .b(R7), .ans(sum7));
-  assign O = sum7[15:0];
+  //Branch 1
+  adder_16bit add01 (.a(R0), .b(R1), .ans(sum01));
+  adder_16bit add23 (.a(R2), .b(R3), .ans(sum23));
+  adder_16bit add45 (.a(R4), .b(R5), .ans(sum45));
+  adder_16bit add67 (.a(R6), .b(R7), .ans(sum67));
+  
+  //Branch 2
+  adder_16bit add0123 (.a(sum01[15:0]), .b(sum23[15:0]), .ans(sum0123));
+  adder_16bit add4567 (.a(sum45[15:0]), .b(sum67[15:0]), .ans(sum4567));
+  
+  //Branch 3
+  adder_16bit addF (.a(sum0123[15:0]), .b(sum4567[15:0]), .ans(sumF));
+  assign O = sumF[15:0];
     
 endmodule
 
