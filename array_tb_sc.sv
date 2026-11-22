@@ -3,11 +3,11 @@
 module array_tb_sc; 
 
 //declare variables
-parameter N = 8; 
-reg clk = 0;
-reg valid, clear, rst;
-reg [N-1:0][7:0] a,b;          
-wire [N-1:0][N-1:0][31:0] c;   
+parameter N = 2; 
+logic clk = 0;
+logic valid, clear, rst;
+logic [N-1:0][7:0] a,b;          
+logic [N-1:0][N-1:0][31:0] c;   
 int A[N][N], B[N][N];                  
 int expected[N][N];
 int errors = 0;

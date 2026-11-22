@@ -1,7 +1,7 @@
 module sig_mult_8bit_tb;
 
-  reg signed [7:0] A,B;
-  wire signed [15:0] O;
+  logic signed [7:0] A,B;
+  logic signed [15:0] O;
   int errors = 0;
   
   sig_mult_8bit inst (.A(A), .B(B), .O(O));

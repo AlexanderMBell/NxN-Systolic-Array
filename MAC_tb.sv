@@ -2,10 +2,10 @@
 
 module mac_tb;
 
-  reg clk = 0;
-  reg rst, valid, clear;
-  reg signed [7:0] A,B;
-  wire signed [31:0] acc;
+  logic clk = 0;
+  logic rst, valid, clear;
+  logic signed [7:0] A,B;
+  logic signed [31:0] acc;
 
   always #5 clk = ~clk;
 

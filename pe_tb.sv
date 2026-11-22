@@ -2,11 +2,11 @@
 
 module pe_tb;
 
-reg clk = 0;
-reg rst, clear, valid;
-reg signed [7:0] A_in,B_in;
-wire signed [7:0] A_out,B_out;
-wire signed [31:0] acc;
+logic clk = 0;
+logic rst, clear, valid;
+logic signed [7:0] A_in,B_in;
+logic signed [7:0] A_out,B_out;
+logic signed [31:0] acc;
 
 always #5 clk = ~clk;
 
