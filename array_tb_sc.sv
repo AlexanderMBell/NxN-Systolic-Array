@@ -5,7 +5,7 @@ module array_tb_sc;
 //declare variables
 parameter N = 2; 
 logic clk = 0;
-logic valid, clear, rst;
+logic valid, clear, rst, en;
 logic [N-1:0][7:0] a,b;          
 logic [N-1:0][N-1:0][31:0] c;   
 int A[N][N], B[N][N];                  
@@ -22,6 +22,7 @@ nxn_systolic_array #(.N(N)) inst (
     .valid(valid),
     .clear(clear),
     .rst(rst),
+    .en(en),
     .a(a),
     .b(b),
     .c(c)
@@ -86,6 +87,7 @@ endtask
 initial begin
 //Reset everything, setting all values to 0.
     rst = 1; 
+    en =1;
     valid = 0; 
     clear = 0;
     a = 0; b = 0;

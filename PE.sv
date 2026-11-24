@@ -6,6 +6,7 @@ module pe
  input logic         rst,
  input logic         valid,
  input logic         clear,
+ input logic         en,
  input logic [7:0]   A_in,
  input logic [7:0]   B_in,
  output logic [7:0]  A_out,
@@ -18,17 +19,18 @@ mac inst (
     .rst(rst),
     .valid(valid),
     .clear(clear),
+    .en(en),
     .A(A_in),
     .B(B_in),
     .acc(acc)
 );
 
 always @(posedge clk) begin
-    if(rst) begin
+    if (rst) begin
         A_out <= 0;
         B_out <= 0;
     end
-    else begin
+    else if (en) begin
         A_out <= A_in;
         B_out <= B_in;
     end

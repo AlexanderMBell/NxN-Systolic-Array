@@ -3,7 +3,7 @@
 module pe_tb;
 
 logic clk = 0;
-logic rst, clear, valid;
+logic rst, clear, valid, en;
 logic signed [7:0] A_in,B_in;
 logic signed [7:0] A_out,B_out;
 logic signed [31:0] acc;
@@ -15,6 +15,7 @@ pe inst(
     .rst(rst),
     .valid(valid),
     .clear(clear),
+    .en(en),
     .A_in(A_in),
     .B_in(B_in),
     .A_out(A_out),
@@ -26,6 +27,7 @@ initial begin
 //Test Reset:
 valid = 0;
 clear = 0;
+en = 1;
 rst = 1;
 A_in = 0;
 B_in = 0;

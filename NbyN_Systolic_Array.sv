@@ -4,6 +4,7 @@ module nxn_systolic_array#(parameter N = 4)
  input logic                       valid,
  input logic                       rst,
  input logic                       clear,
+ input logic                       en,
  input logic [N-1:0][7:0]          a,
  input logic [N-1:0][7:0]          b,
  output logic [N-1:0][N-1:0][31:0] c
@@ -32,6 +33,7 @@ for(i=0;i<N;i=i+1)begin : row
             .rst(rst),
             .valid(valid),
             .clear(clear),
+            .en(en),
             .A_in(a_wire[i][j]),
             .B_in(b_wire[i][j]),
             //working across rows, each PE in row will incrememnt column value for a, and row value for b.
