@@ -3,7 +3,7 @@
 module mac_tb;
 
   logic clk = 0;
-  logic rst, valid, clear;
+  logic rst, valid, clear, en;
   logic signed [7:0] A,B;
   logic signed [31:0] acc;
 
@@ -14,6 +14,7 @@ module mac_tb;
     .rst(rst),
     .valid(valid),
     .clear(clear),
+    .en(en),
     .A(A),
     .B(B),
     .acc(acc)
@@ -23,6 +24,7 @@ module mac_tb;
 
     //Test Reset:
     rst = 1;
+    en = 1;
     clear = 0;
     valid = 0;
     A = 0;

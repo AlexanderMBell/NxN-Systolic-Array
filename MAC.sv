@@ -6,6 +6,7 @@ module mac
  input logic         clear,
  input logic [7:0]   A,
  input logic [7:0]   B,
+ input logic         en,
  output logic [31:0] acc
 );
 
@@ -38,12 +39,17 @@ module mac
         valid_delay <= 1'b0;
         acc <= 32'd0;
     end
-    else begin
+    else if (clear) begin
+        acc <= 32'd0;
+        valid_delay <= 1'b0;
+    end
+    else if (en) begin
+        //this is a register between the multiply and sum functions
         prod_reg <= O;
-        valid_delay <= valid && !clear;
-        
-        if(clear) acc <= 32'd0;
-        else if(valid_delay) acc <= sum[31:0];
+        //this is a register to preserve the validity of the value above
+        valid_delay <= valid;
+        if(valid_delay) acc <= sum[31:0];
+        //hold (defualt)
         else acc <= acc;
     end
   end
