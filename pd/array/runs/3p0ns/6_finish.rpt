@@ -1,0 +1,644 @@
+
+==========================================================================
+finish report_tns
+--------------------------------------------------------------------------
+tns max 0.00
+
+==========================================================================
+finish report_wns
+--------------------------------------------------------------------------
+wns max 0.00
+
+==========================================================================
+finish report_worst_slack
+--------------------------------------------------------------------------
+worst slack max 0.20
+
+==========================================================================
+finish report_clock_min_period
+--------------------------------------------------------------------------
+core_clock period_min = 2.80 fmax = 357.08
+
+==========================================================================
+finish report_clock_skew
+--------------------------------------------------------------------------
+Clock core_clock
+   0.21 source latency inst.out_valid$_SDFFE_PP0P_/CK ^
+  -0.19 target latency arrayinst.row[2].column[0].inst.B_out[6]$_SDFFE_PP0P_/CK ^
+   0.00 CRPR
+--------------
+   0.01 setup skew
+
+
+==========================================================================
+finish report_checks -path_delay min
+--------------------------------------------------------------------------
+Startpoint: inst.out_valid$_SDFFE_PP0P_
+            (rising edge-triggered flip-flop clocked by core_clock)
+Endpoint: inst.skid_valid$_SDFFE_PP0P_
+          (rising edge-triggered flip-flop clocked by core_clock)
+Path Group: core_clock
+Path Type: min
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock core_clock (rise edge)
+                          0.00    0.00   clock source latency
+     1   17.85    0.00    0.00    0.00 ^ clk (in)
+                                         clk (net)
+                  0.00    0.00    0.00 ^ clkbuf_0_clk/A (CLKBUF_X3)
+    16   73.89    0.06    0.08    0.08 ^ clkbuf_0_clk/Z (CLKBUF_X3)
+                                         clknet_0_clk (net)
+                  0.06    0.00    0.09 ^ clkbuf_4_8_0_clk/A (CLKBUF_X3)
+    13   35.54    0.03    0.07    0.16 ^ clkbuf_4_8_0_clk/Z (CLKBUF_X3)
+                                         clknet_4_8_0_clk (net)
+                  0.03    0.00    0.16 ^ clkbuf_leaf_37_clk/A (CLKBUF_X3)
+     6   10.20    0.01    0.04    0.21 ^ clkbuf_leaf_37_clk/Z (CLKBUF_X3)
+                                         clknet_leaf_37_clk (net)
+                  0.01    0.00    0.21 ^ inst.out_valid$_SDFFE_PP0P_/CK (DFF_X1)
+     2    3.86    0.01    0.07    0.28 ^ inst.out_valid$_SDFFE_PP0P_/QN (DFF_X1)
+                                         _00000_ (net)
+                  0.01    0.00    0.28 ^ _06728_/A3 (NOR4_X1)
+     1    1.43    0.01    0.01    0.29 v _06728_/ZN (NOR4_X1)
+                                         _00240_ (net)
+                  0.01    0.00    0.29 v inst.skid_valid$_SDFFE_PP0P_/D (DFF_X1)
+                                  0.29   data arrival time
+
+                          0.00    0.00   clock core_clock (rise edge)
+                          0.00    0.00   clock source latency
+     1   17.85    0.00    0.00    0.00 ^ clk (in)
+                                         clk (net)
+                  0.00    0.00    0.00 ^ clkbuf_0_clk/A (CLKBUF_X3)
+    16   73.89    0.06    0.08    0.08 ^ clkbuf_0_clk/Z (CLKBUF_X3)
+                                         clknet_0_clk (net)
+                  0.06    0.00    0.09 ^ clkbuf_4_8_0_clk/A (CLKBUF_X3)
+    13   35.54    0.03    0.07    0.16 ^ clkbuf_4_8_0_clk/Z (CLKBUF_X3)
+                                         clknet_4_8_0_clk (net)
+                  0.03    0.00    0.16 ^ clkbuf_leaf_33_clk/A (CLKBUF_X3)
+     7    9.11    0.01    0.04    0.20 ^ clkbuf_leaf_33_clk/Z (CLKBUF_X3)
+                                         clknet_leaf_33_clk (net)
+                  0.01    0.00    0.20 ^ inst.skid_valid$_SDFFE_PP0P_/CK (DFF_X1)
+                          0.00    0.20   clock reconvergence pessimism
+                          0.00    0.21   library hold time
+                                  0.21   data required time
+-----------------------------------------------------------------------------
+                                  0.21   data required time
+                                 -0.29   data arrival time
+-----------------------------------------------------------------------------
+                                  0.08   slack (MET)
+
+
+
+==========================================================================
+finish report_checks -path_delay max
+--------------------------------------------------------------------------
+Startpoint: arrayinst.row[2].column[2].inst.inst.acc[0]$_SDFFE_PP0P_
+            (rising edge-triggered flip-flop clocked by core_clock)
+Endpoint: arrayinst.row[2].column[2].inst.inst.acc[31]$_SDFFE_PP0P_
+          (rising edge-triggered flip-flop clocked by core_clock)
+Path Group: core_clock
+Path Type: max
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock core_clock (rise edge)
+                          0.00    0.00   clock source latency
+     1   17.85    0.00    0.00    0.00 ^ clk (in)
+                                         clk (net)
+                  0.00    0.00    0.00 ^ clkbuf_0_clk/A (CLKBUF_X3)
+    16   73.89    0.06    0.08    0.08 ^ clkbuf_0_clk/Z (CLKBUF_X3)
+                                         clknet_0_clk (net)
+                  0.06    0.01    0.09 ^ clkbuf_4_5_0_clk/A (CLKBUF_X3)
+    13   32.01    0.03    0.07    0.16 ^ clkbuf_4_5_0_clk/Z (CLKBUF_X3)
+                                         clknet_4_5_0_clk (net)
+                  0.03    0.00    0.16 ^ clkbuf_leaf_141_clk/A (CLKBUF_X3)
+     7    9.55    0.01    0.04    0.20 ^ clkbuf_leaf_141_clk/Z (CLKBUF_X3)
+                                         clknet_leaf_141_clk (net)
+                  0.01    0.00    0.20 ^ arrayinst.row[2].column[2].inst.inst.acc[0]$_SDFFE_PP0P_/CK (DFF_X1)
+     3    6.64    0.01    0.09    0.29 v arrayinst.row[2].column[2].inst.inst.acc[0]$_SDFFE_PP0P_/Q (DFF_X1)
+                                         net313 (net)
+                  0.01    0.00    0.29 v _13051_/B (HA_X1)
+     1    3.88    0.01    0.04    0.33 v _13051_/CO (HA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[0].inst.c_2 (net)
+                  0.01    0.00    0.33 v _12371_/A (FA_X1)
+     1    3.97    0.02    0.08    0.41 v _12371_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[1].inst.c_2 (net)
+                  0.02    0.00    0.41 v _12382_/A (FA_X1)
+     1    4.15    0.02    0.08    0.49 v _12382_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[2].inst.c_2 (net)
+                  0.02    0.00    0.49 v _12384_/A (FA_X1)
+     1    4.05    0.02    0.08    0.57 v _12384_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[3].inst.c_2 (net)
+                  0.02    0.00    0.57 v _12385_/A (FA_X1)
+     1    3.94    0.02    0.08    0.65 v _12385_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[4].inst.c_2 (net)
+                  0.02    0.00    0.65 v _12386_/A (FA_X1)
+     1    3.72    0.02    0.08    0.73 v _12386_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[5].inst.c_2 (net)
+                  0.02    0.00    0.73 v _12387_/A (FA_X1)
+     1    3.66    0.02    0.08    0.81 v _12387_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[6].inst.c_2 (net)
+                  0.02    0.00    0.81 v _12388_/A (FA_X1)
+     1    3.81    0.02    0.08    0.89 v _12388_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[7].inst.c_2 (net)
+                  0.02    0.00    0.89 v _12389_/A (FA_X1)
+     1    4.00    0.02    0.08    0.98 v _12389_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[8].inst.c_2 (net)
+                  0.02    0.00    0.98 v _12390_/A (FA_X1)
+     1    4.59    0.02    0.08    1.06 v _12390_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[10].inst.c_in (net)
+                  0.02    0.00    1.06 v _12361_/A (FA_X1)
+     1    5.03    0.02    0.08    1.14 v _12361_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[10].inst.c_2 (net)
+                  0.02    0.00    1.14 v _12362_/A (FA_X1)
+     1    4.20    0.02    0.08    1.22 v _12362_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[11].inst.c_2 (net)
+                  0.02    0.00    1.22 v _12363_/A (FA_X1)
+     1    4.47    0.02    0.08    1.31 v _12363_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[12].inst.c_2 (net)
+                  0.02    0.00    1.31 v _12364_/A (FA_X1)
+     1    4.07    0.02    0.08    1.39 v _12364_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[13].inst.c_2 (net)
+                  0.02    0.00    1.39 v _12365_/A (FA_X1)
+     1    4.08    0.02    0.08    1.47 v _12365_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[14].inst.c_2 (net)
+                  0.02    0.00    1.47 v _12366_/A (FA_X1)
+     1    3.73    0.02    0.08    1.55 v _12366_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[15].inst.c_2 (net)
+                  0.02    0.00    1.55 v _12367_/A (FA_X1)
+     1    3.64    0.02    0.08    1.63 v _12367_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[16].inst.c_2 (net)
+                  0.02    0.00    1.63 v _12368_/B (FA_X1)
+     1    3.49    0.02    0.08    1.71 v _12368_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[17].inst.c_2 (net)
+                  0.02    0.00    1.71 v _12369_/B (FA_X1)
+     1    3.56    0.02    0.08    1.80 v _12369_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[18].inst.c_2 (net)
+                  0.02    0.00    1.80 v _12370_/B (FA_X1)
+     1    7.76    0.02    0.09    1.89 v _12370_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[19].inst.c_2 (net)
+                  0.02    0.00    1.89 v _12372_/B (FA_X1)
+     1   13.37    0.03    0.10    2.00 v _12372_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[20].inst.c_2 (net)
+                  0.03    0.00    2.00 v _12373_/B (FA_X1)
+     1    3.54    0.02    0.09    2.08 v _12373_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[21].inst.c_2 (net)
+                  0.02    0.00    2.08 v _12374_/B (FA_X1)
+     1    3.47    0.02    0.08    2.17 v _12374_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[22].inst.c_2 (net)
+                  0.02    0.00    2.17 v _12375_/B (FA_X1)
+     1    3.81    0.02    0.08    2.25 v _12375_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[23].inst.c_2 (net)
+                  0.02    0.00    2.25 v _12376_/B (FA_X1)
+     1    3.51    0.02    0.08    2.33 v _12376_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[24].inst.c_2 (net)
+                  0.02    0.00    2.33 v _12377_/B (FA_X1)
+     1    3.52    0.02    0.08    2.42 v _12377_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[25].inst.c_2 (net)
+                  0.02    0.00    2.42 v _12378_/B (FA_X1)
+     1    3.54    0.02    0.08    2.50 v _12378_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[26].inst.c_2 (net)
+                  0.02    0.00    2.50 v _12379_/B (FA_X1)
+     1    3.49    0.02    0.08    2.58 v _12379_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[27].inst.c_2 (net)
+                  0.02    0.00    2.58 v _12380_/B (FA_X1)
+     1    3.76    0.02    0.08    2.67 v _12380_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[28].inst.c_2 (net)
+                  0.02    0.00    2.67 v _12381_/B (FA_X1)
+     1    3.49    0.02    0.08    2.75 v _12381_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[29].inst.c_2 (net)
+                  0.02    0.00    2.75 v _12383_/B (FA_X1)
+     1    2.43    0.01    0.08    2.83 v _12383_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[30].inst.c_2 (net)
+                  0.01    0.00    2.83 v _06267_/B (XNOR2_X1)
+     1    1.67    0.02    0.04    2.87 v _06267_/ZN (XNOR2_X1)
+                                         _01650_ (net)
+                  0.02    0.00    2.87 v _06268_/A2 (NOR2_X1)
+     1    2.70    0.02    0.04    2.91 ^ _06268_/ZN (NOR2_X1)
+                                         _01651_ (net)
+                  0.02    0.00    2.91 ^ _06269_/B (XNOR2_X1)
+     1    1.75    0.02    0.04    2.95 ^ _06269_/ZN (XNOR2_X1)
+                                         _01652_ (net)
+                  0.02    0.00    2.95 ^ _06270_/A2 (NOR2_X1)
+     1    1.27    0.01    0.01    2.96 v _06270_/ZN (NOR2_X1)
+                                         _00213_ (net)
+                  0.01    0.00    2.96 v arrayinst.row[2].column[2].inst.inst.acc[31]$_SDFFE_PP0P_/D (DFF_X1)
+                                  2.96   data arrival time
+
+                          3.00    3.00   clock core_clock (rise edge)
+                          0.00    3.00   clock source latency
+     1   17.85    0.00    0.00    3.00 ^ clk (in)
+                                         clk (net)
+                  0.00    0.00    3.00 ^ clkbuf_0_clk/A (CLKBUF_X3)
+    16   73.89    0.06    0.08    3.08 ^ clkbuf_0_clk/Z (CLKBUF_X3)
+                                         clknet_0_clk (net)
+                  0.06    0.01    3.09 ^ clkbuf_4_11_0_clk/A (CLKBUF_X3)
+    11   29.65    0.03    0.07    3.16 ^ clkbuf_4_11_0_clk/Z (CLKBUF_X3)
+                                         clknet_4_11_0_clk (net)
+                  0.03    0.00    3.16 ^ clkbuf_leaf_57_clk/A (CLKBUF_X3)
+     7    8.77    0.01    0.04    3.20 ^ clkbuf_leaf_57_clk/Z (CLKBUF_X3)
+                                         clknet_leaf_57_clk (net)
+                  0.01    0.00    3.20 ^ arrayinst.row[2].column[2].inst.inst.acc[31]$_SDFFE_PP0P_/CK (DFF_X1)
+                          0.00    3.20   clock reconvergence pessimism
+                         -0.04    3.16   library setup time
+                                  3.16   data required time
+-----------------------------------------------------------------------------
+                                  3.16   data required time
+                                 -2.96   data arrival time
+-----------------------------------------------------------------------------
+                                  0.20   slack (MET)
+
+
+
+==========================================================================
+finish report_checks -unconstrained
+--------------------------------------------------------------------------
+Startpoint: arrayinst.row[2].column[2].inst.inst.acc[0]$_SDFFE_PP0P_
+            (rising edge-triggered flip-flop clocked by core_clock)
+Endpoint: arrayinst.row[2].column[2].inst.inst.acc[31]$_SDFFE_PP0P_
+          (rising edge-triggered flip-flop clocked by core_clock)
+Path Group: core_clock
+Path Type: max
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock core_clock (rise edge)
+                          0.00    0.00   clock source latency
+     1   17.85    0.00    0.00    0.00 ^ clk (in)
+                                         clk (net)
+                  0.00    0.00    0.00 ^ clkbuf_0_clk/A (CLKBUF_X3)
+    16   73.89    0.06    0.08    0.08 ^ clkbuf_0_clk/Z (CLKBUF_X3)
+                                         clknet_0_clk (net)
+                  0.06    0.01    0.09 ^ clkbuf_4_5_0_clk/A (CLKBUF_X3)
+    13   32.01    0.03    0.07    0.16 ^ clkbuf_4_5_0_clk/Z (CLKBUF_X3)
+                                         clknet_4_5_0_clk (net)
+                  0.03    0.00    0.16 ^ clkbuf_leaf_141_clk/A (CLKBUF_X3)
+     7    9.55    0.01    0.04    0.20 ^ clkbuf_leaf_141_clk/Z (CLKBUF_X3)
+                                         clknet_leaf_141_clk (net)
+                  0.01    0.00    0.20 ^ arrayinst.row[2].column[2].inst.inst.acc[0]$_SDFFE_PP0P_/CK (DFF_X1)
+     3    6.64    0.01    0.09    0.29 v arrayinst.row[2].column[2].inst.inst.acc[0]$_SDFFE_PP0P_/Q (DFF_X1)
+                                         net313 (net)
+                  0.01    0.00    0.29 v _13051_/B (HA_X1)
+     1    3.88    0.01    0.04    0.33 v _13051_/CO (HA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[0].inst.c_2 (net)
+                  0.01    0.00    0.33 v _12371_/A (FA_X1)
+     1    3.97    0.02    0.08    0.41 v _12371_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[1].inst.c_2 (net)
+                  0.02    0.00    0.41 v _12382_/A (FA_X1)
+     1    4.15    0.02    0.08    0.49 v _12382_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[2].inst.c_2 (net)
+                  0.02    0.00    0.49 v _12384_/A (FA_X1)
+     1    4.05    0.02    0.08    0.57 v _12384_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[3].inst.c_2 (net)
+                  0.02    0.00    0.57 v _12385_/A (FA_X1)
+     1    3.94    0.02    0.08    0.65 v _12385_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[4].inst.c_2 (net)
+                  0.02    0.00    0.65 v _12386_/A (FA_X1)
+     1    3.72    0.02    0.08    0.73 v _12386_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[5].inst.c_2 (net)
+                  0.02    0.00    0.73 v _12387_/A (FA_X1)
+     1    3.66    0.02    0.08    0.81 v _12387_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[6].inst.c_2 (net)
+                  0.02    0.00    0.81 v _12388_/A (FA_X1)
+     1    3.81    0.02    0.08    0.89 v _12388_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[7].inst.c_2 (net)
+                  0.02    0.00    0.89 v _12389_/A (FA_X1)
+     1    4.00    0.02    0.08    0.98 v _12389_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[8].inst.c_2 (net)
+                  0.02    0.00    0.98 v _12390_/A (FA_X1)
+     1    4.59    0.02    0.08    1.06 v _12390_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[10].inst.c_in (net)
+                  0.02    0.00    1.06 v _12361_/A (FA_X1)
+     1    5.03    0.02    0.08    1.14 v _12361_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[10].inst.c_2 (net)
+                  0.02    0.00    1.14 v _12362_/A (FA_X1)
+     1    4.20    0.02    0.08    1.22 v _12362_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[11].inst.c_2 (net)
+                  0.02    0.00    1.22 v _12363_/A (FA_X1)
+     1    4.47    0.02    0.08    1.31 v _12363_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[12].inst.c_2 (net)
+                  0.02    0.00    1.31 v _12364_/A (FA_X1)
+     1    4.07    0.02    0.08    1.39 v _12364_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[13].inst.c_2 (net)
+                  0.02    0.00    1.39 v _12365_/A (FA_X1)
+     1    4.08    0.02    0.08    1.47 v _12365_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[14].inst.c_2 (net)
+                  0.02    0.00    1.47 v _12366_/A (FA_X1)
+     1    3.73    0.02    0.08    1.55 v _12366_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[15].inst.c_2 (net)
+                  0.02    0.00    1.55 v _12367_/A (FA_X1)
+     1    3.64    0.02    0.08    1.63 v _12367_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[16].inst.c_2 (net)
+                  0.02    0.00    1.63 v _12368_/B (FA_X1)
+     1    3.49    0.02    0.08    1.71 v _12368_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[17].inst.c_2 (net)
+                  0.02    0.00    1.71 v _12369_/B (FA_X1)
+     1    3.56    0.02    0.08    1.80 v _12369_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[18].inst.c_2 (net)
+                  0.02    0.00    1.80 v _12370_/B (FA_X1)
+     1    7.76    0.02    0.09    1.89 v _12370_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[19].inst.c_2 (net)
+                  0.02    0.00    1.89 v _12372_/B (FA_X1)
+     1   13.37    0.03    0.10    2.00 v _12372_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[20].inst.c_2 (net)
+                  0.03    0.00    2.00 v _12373_/B (FA_X1)
+     1    3.54    0.02    0.09    2.08 v _12373_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[21].inst.c_2 (net)
+                  0.02    0.00    2.08 v _12374_/B (FA_X1)
+     1    3.47    0.02    0.08    2.17 v _12374_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[22].inst.c_2 (net)
+                  0.02    0.00    2.17 v _12375_/B (FA_X1)
+     1    3.81    0.02    0.08    2.25 v _12375_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[23].inst.c_2 (net)
+                  0.02    0.00    2.25 v _12376_/B (FA_X1)
+     1    3.51    0.02    0.08    2.33 v _12376_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[24].inst.c_2 (net)
+                  0.02    0.00    2.33 v _12377_/B (FA_X1)
+     1    3.52    0.02    0.08    2.42 v _12377_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[25].inst.c_2 (net)
+                  0.02    0.00    2.42 v _12378_/B (FA_X1)
+     1    3.54    0.02    0.08    2.50 v _12378_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[26].inst.c_2 (net)
+                  0.02    0.00    2.50 v _12379_/B (FA_X1)
+     1    3.49    0.02    0.08    2.58 v _12379_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[27].inst.c_2 (net)
+                  0.02    0.00    2.58 v _12380_/B (FA_X1)
+     1    3.76    0.02    0.08    2.67 v _12380_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[28].inst.c_2 (net)
+                  0.02    0.00    2.67 v _12381_/B (FA_X1)
+     1    3.49    0.02    0.08    2.75 v _12381_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[29].inst.c_2 (net)
+                  0.02    0.00    2.75 v _12383_/B (FA_X1)
+     1    2.43    0.01    0.08    2.83 v _12383_/CO (FA_X1)
+                                         arrayinst.row[2].column[2].inst.inst.add.genblk1[30].inst.c_2 (net)
+                  0.01    0.00    2.83 v _06267_/B (XNOR2_X1)
+     1    1.67    0.02    0.04    2.87 v _06267_/ZN (XNOR2_X1)
+                                         _01650_ (net)
+                  0.02    0.00    2.87 v _06268_/A2 (NOR2_X1)
+     1    2.70    0.02    0.04    2.91 ^ _06268_/ZN (NOR2_X1)
+                                         _01651_ (net)
+                  0.02    0.00    2.91 ^ _06269_/B (XNOR2_X1)
+     1    1.75    0.02    0.04    2.95 ^ _06269_/ZN (XNOR2_X1)
+                                         _01652_ (net)
+                  0.02    0.00    2.95 ^ _06270_/A2 (NOR2_X1)
+     1    1.27    0.01    0.01    2.96 v _06270_/ZN (NOR2_X1)
+                                         _00213_ (net)
+                  0.01    0.00    2.96 v arrayinst.row[2].column[2].inst.inst.acc[31]$_SDFFE_PP0P_/D (DFF_X1)
+                                  2.96   data arrival time
+
+                          3.00    3.00   clock core_clock (rise edge)
+                          0.00    3.00   clock source latency
+     1   17.85    0.00    0.00    3.00 ^ clk (in)
+                                         clk (net)
+                  0.00    0.00    3.00 ^ clkbuf_0_clk/A (CLKBUF_X3)
+    16   73.89    0.06    0.08    3.08 ^ clkbuf_0_clk/Z (CLKBUF_X3)
+                                         clknet_0_clk (net)
+                  0.06    0.01    3.09 ^ clkbuf_4_11_0_clk/A (CLKBUF_X3)
+    11   29.65    0.03    0.07    3.16 ^ clkbuf_4_11_0_clk/Z (CLKBUF_X3)
+                                         clknet_4_11_0_clk (net)
+                  0.03    0.00    3.16 ^ clkbuf_leaf_57_clk/A (CLKBUF_X3)
+     7    8.77    0.01    0.04    3.20 ^ clkbuf_leaf_57_clk/Z (CLKBUF_X3)
+                                         clknet_leaf_57_clk (net)
+                  0.01    0.00    3.20 ^ arrayinst.row[2].column[2].inst.inst.acc[31]$_SDFFE_PP0P_/CK (DFF_X1)
+                          0.00    3.20   clock reconvergence pessimism
+                         -0.04    3.16   library setup time
+                                  3.16   data required time
+-----------------------------------------------------------------------------
+                                  3.16   data required time
+                                 -2.96   data arrival time
+-----------------------------------------------------------------------------
+                                  0.20   slack (MET)
+
+
+
+==========================================================================
+finish report_check_types -max_slew -max_cap -max_fanout -violators
+--------------------------------------------------------------------------
+
+==========================================================================
+finish max_slew_check_slack
+--------------------------------------------------------------------------
+0.0820460096001625
+
+==========================================================================
+finish max_slew_check_limit
+--------------------------------------------------------------------------
+0.1985349953174591
+
+==========================================================================
+finish max_slew_check_slack_limit
+--------------------------------------------------------------------------
+0.4133
+
+==========================================================================
+finish max_fanout_check_slack
+--------------------------------------------------------------------------
+1.0000000150474662e+30
+
+==========================================================================
+finish max_fanout_check_limit
+--------------------------------------------------------------------------
+1.0000000150474662e+30
+
+==========================================================================
+finish max_capacitance_check_slack
+--------------------------------------------------------------------------
+7.330451965332031
+
+==========================================================================
+finish max_capacitance_check_limit
+--------------------------------------------------------------------------
+10.47130012512207
+
+==========================================================================
+finish max_capacitance_check_slack_limit
+--------------------------------------------------------------------------
+0.7001
+
+==========================================================================
+finish max_slew_violation_count
+--------------------------------------------------------------------------
+max slew violation count 0
+
+==========================================================================
+finish max_fanout_violation_count
+--------------------------------------------------------------------------
+max fanout violation count 0
+
+==========================================================================
+finish max_cap_violation_count
+--------------------------------------------------------------------------
+max cap violation count 0
+
+==========================================================================
+finish setup_violation_count
+--------------------------------------------------------------------------
+setup violation count 0
+
+==========================================================================
+finish hold_violation_count
+--------------------------------------------------------------------------
+hold violation count 0
+
+==========================================================================
+finish report_checks -path_delay max reg to reg
+--------------------------------------------------------------------------
+Startpoint: arrayinst.row[2].column[2].inst.inst.acc[0]$_SDFFE_PP0P_
+            (rising edge-triggered flip-flop clocked by core_clock)
+Endpoint: arrayinst.row[2].column[2].inst.inst.acc[31]$_SDFFE_PP0P_
+          (rising edge-triggered flip-flop clocked by core_clock)
+Path Group: core_clock
+Path Type: max
+
+  Delay    Time   Description
+---------------------------------------------------------
+   0.00    0.00   clock core_clock (rise edge)
+   0.00    0.00   clock source latency
+   0.00    0.00 ^ clk (in)
+   0.08    0.08 ^ clkbuf_0_clk/Z (CLKBUF_X3)
+   0.07    0.16 ^ clkbuf_4_5_0_clk/Z (CLKBUF_X3)
+   0.04    0.20 ^ clkbuf_leaf_141_clk/Z (CLKBUF_X3)
+   0.00    0.20 ^ arrayinst.row[2].column[2].inst.inst.acc[0]$_SDFFE_PP0P_/CK (DFF_X1)
+   0.09    0.29 v arrayinst.row[2].column[2].inst.inst.acc[0]$_SDFFE_PP0P_/Q (DFF_X1)
+   0.04    0.33 v _13051_/CO (HA_X1)
+   0.08    0.41 v _12371_/CO (FA_X1)
+   0.08    0.49 v _12382_/CO (FA_X1)
+   0.08    0.57 v _12384_/CO (FA_X1)
+   0.08    0.65 v _12385_/CO (FA_X1)
+   0.08    0.73 v _12386_/CO (FA_X1)
+   0.08    0.81 v _12387_/CO (FA_X1)
+   0.08    0.89 v _12388_/CO (FA_X1)
+   0.08    0.98 v _12389_/CO (FA_X1)
+   0.08    1.06 v _12390_/CO (FA_X1)
+   0.08    1.14 v _12361_/CO (FA_X1)
+   0.08    1.22 v _12362_/CO (FA_X1)
+   0.08    1.31 v _12363_/CO (FA_X1)
+   0.08    1.39 v _12364_/CO (FA_X1)
+   0.08    1.47 v _12365_/CO (FA_X1)
+   0.08    1.55 v _12366_/CO (FA_X1)
+   0.08    1.63 v _12367_/CO (FA_X1)
+   0.08    1.71 v _12368_/CO (FA_X1)
+   0.08    1.80 v _12369_/CO (FA_X1)
+   0.09    1.89 v _12370_/CO (FA_X1)
+   0.11    2.00 v _12372_/CO (FA_X1)
+   0.09    2.08 v _12373_/CO (FA_X1)
+   0.08    2.17 v _12374_/CO (FA_X1)
+   0.08    2.25 v _12375_/CO (FA_X1)
+   0.08    2.33 v _12376_/CO (FA_X1)
+   0.08    2.42 v _12377_/CO (FA_X1)
+   0.08    2.50 v _12378_/CO (FA_X1)
+   0.08    2.58 v _12379_/CO (FA_X1)
+   0.08    2.67 v _12380_/CO (FA_X1)
+   0.08    2.75 v _12381_/CO (FA_X1)
+   0.08    2.83 v _12383_/CO (FA_X1)
+   0.04    2.87 v _06267_/ZN (XNOR2_X1)
+   0.04    2.91 ^ _06268_/ZN (NOR2_X1)
+   0.04    2.95 ^ _06269_/ZN (XNOR2_X1)
+   0.01    2.96 v _06270_/ZN (NOR2_X1)
+   0.00    2.96 v arrayinst.row[2].column[2].inst.inst.acc[31]$_SDFFE_PP0P_/D (DFF_X1)
+           2.96   data arrival time
+
+   3.00    3.00   clock core_clock (rise edge)
+   0.00    3.00   clock source latency
+   0.00    3.00 ^ clk (in)
+   0.08    3.08 ^ clkbuf_0_clk/Z (CLKBUF_X3)
+   0.07    3.16 ^ clkbuf_4_11_0_clk/Z (CLKBUF_X3)
+   0.04    3.20 ^ clkbuf_leaf_57_clk/Z (CLKBUF_X3)
+   0.00    3.20 ^ arrayinst.row[2].column[2].inst.inst.acc[31]$_SDFFE_PP0P_/CK (DFF_X1)
+   0.00    3.20   clock reconvergence pessimism
+  -0.04    3.16   library setup time
+           3.16   data required time
+---------------------------------------------------------
+           3.16   data required time
+          -2.96   data arrival time
+---------------------------------------------------------
+           0.20   slack (MET)
+
+
+
+==========================================================================
+finish report_checks -path_delay min reg to reg
+--------------------------------------------------------------------------
+Startpoint: inst.out_valid$_SDFFE_PP0P_
+            (rising edge-triggered flip-flop clocked by core_clock)
+Endpoint: inst.skid_valid$_SDFFE_PP0P_
+          (rising edge-triggered flip-flop clocked by core_clock)
+Path Group: core_clock
+Path Type: min
+
+  Delay    Time   Description
+---------------------------------------------------------
+   0.00    0.00   clock core_clock (rise edge)
+   0.00    0.00   clock source latency
+   0.00    0.00 ^ clk (in)
+   0.08    0.08 ^ clkbuf_0_clk/Z (CLKBUF_X3)
+   0.08    0.16 ^ clkbuf_4_8_0_clk/Z (CLKBUF_X3)
+   0.04    0.21 ^ clkbuf_leaf_37_clk/Z (CLKBUF_X3)
+   0.00    0.21 ^ inst.out_valid$_SDFFE_PP0P_/CK (DFF_X1)
+   0.07    0.28 ^ inst.out_valid$_SDFFE_PP0P_/QN (DFF_X1)
+   0.01    0.29 v _06728_/ZN (NOR4_X1)
+   0.00    0.29 v inst.skid_valid$_SDFFE_PP0P_/D (DFF_X1)
+           0.29   data arrival time
+
+   0.00    0.00   clock core_clock (rise edge)
+   0.00    0.00   clock source latency
+   0.00    0.00 ^ clk (in)
+   0.08    0.08 ^ clkbuf_0_clk/Z (CLKBUF_X3)
+   0.08    0.16 ^ clkbuf_4_8_0_clk/Z (CLKBUF_X3)
+   0.04    0.20 ^ clkbuf_leaf_33_clk/Z (CLKBUF_X3)
+   0.00    0.20 ^ inst.skid_valid$_SDFFE_PP0P_/CK (DFF_X1)
+   0.00    0.20   clock reconvergence pessimism
+   0.00    0.21   library hold time
+           0.21   data required time
+---------------------------------------------------------
+           0.21   data required time
+          -0.29   data arrival time
+---------------------------------------------------------
+           0.08   slack (MET)
+
+
+
+==========================================================================
+finish critical path target clock latency max path
+--------------------------------------------------------------------------
+0.2033
+
+==========================================================================
+finish critical path target clock latency min path
+--------------------------------------------------------------------------
+0.2048
+
+==========================================================================
+finish critical path source clock latency min path
+--------------------------------------------------------------------------
+0.0000
+
+==========================================================================
+finish critical path delay
+--------------------------------------------------------------------------
+2.9607
+
+==========================================================================
+finish critical path slack
+--------------------------------------------------------------------------
+0.1995
+
+==========================================================================
+finish slack div critical path delay
+--------------------------------------------------------------------------
+6.738271
+
+==========================================================================
+finish report_power
+--------------------------------------------------------------------------
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential             2.49e-03   5.25e-05   8.36e-05   2.63e-03  53.5%
+Combinational          1.11e-04   1.84e-04   2.14e-04   5.09e-04  10.4%
+Clock                  8.43e-04   9.18e-04   8.39e-06   1.77e-03  36.1%
+Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+----------------------------------------------------------------
+Total                  3.44e-03   1.15e-03   3.06e-04   4.90e-03 100.0%
+                          70.2%      23.5%       6.2%
