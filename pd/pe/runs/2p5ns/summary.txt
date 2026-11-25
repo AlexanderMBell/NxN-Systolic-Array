@@ -1,0 +1,12 @@
+PE on Nangate45, clock = 2.5 ns
+--- timing ---
+tns max 0.00
+wns max 0.00
+worst slack max 0.02
+core_clock period_min = 2.48 fmax = 403.29
+--- power (W) ---
+Group                  Internal  Switching    Leakage      Total
+Total                  3.01e-04   1.33e-04   2.11e-05   4.54e-04 100.0%
+--- area ---
+Design area 1064 um^2 41% utilization.
+   Chip area for module '\pe': 1063.468000
