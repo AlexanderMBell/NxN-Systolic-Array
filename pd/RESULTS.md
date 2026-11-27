@@ -1,5 +1,7 @@
 # Physical Design Results (OpenROAD, Nangate45)
 
+The sections below the Kogge-Stone section record the original ripple-carry design (RTL `4c9fb39`). The Kogge-Stone runs use RTL `5727a93` on the `kogge-stone` branch.
+
 ## Setup
 
 | Item | Value |
@@ -13,7 +15,7 @@
 | I/O delay | 20% of the clock period on every non-clock input and output |
 | Synthesis | ORFS defaults (Yosys + ABC), design flattened |
 
-## PE clock sweep
+## PE clock sweep (ripple-carry design)
 
 | Clock | Result | Worst slack | TNS | Power | Notes |
 |---|---|---|---|---|---|
@@ -23,7 +25,7 @@
 
 **PE result:** minimum period 2.48 ns, so **Fmax ≈ 403 MHz**. Cell area **1,064 µm²** (41% utilization).
 
-### PE power breakdown at 2.5 ns
+### PE power breakdown at 2.5 ns (ripple-carry)
 
 | Group | Total | Share |
 |---|---|---|
@@ -34,7 +36,7 @@
 
 Going from 200 MHz to 400 MHz roughly doubled the total power (0.237 → 0.454 mW), which is what dynamic power scaling with frequency predicts. Leakage stayed at about 21 µW.
 
-### PE critical path at 2.5 ns (`acc[0]` → `acc[31]`)
+### PE critical path at 2.5 ns, ripple-carry (`acc[0]` → `acc[31]`)
 
 | Step | Delay |
 |---|---|
@@ -48,6 +50,46 @@ Going from 200 MHz to 400 MHz roughly doubled the total power (0.237 → 0.454 m
 | **Slack** | **+0.02 ns** |
 
 **Conclusion:** the 32-bit ripple-carry accumulator in the MAC limits Fmax, at about 75 ps per bit. Clock skew is about 0 ns, and there are no slew, capacitance, fanout or hold violations.
+
+
+## Timing closure with the Kogge-Stone adder (PE)
+
+**Goal:** close the PE at 500 MHz (2.0 ns), where the ripple-carry design failed by 0.44 ns (TNS −1.69 ns).
+
+**Method:** replace one set of adders at a time with my parameterized Kogge-Stone adder, rerun every testbench, rerun the flow, and read the new critical path. Each run uses the same config as before (40% utilization, 20% I/O delay, typical corner).
+
+| Step | Clock | Worst slack | Fmax | Cell area | Power | Critical path |
+|---|---|---|---|---|---|---|
+| Ripple-carry everywhere | 2.0 ns | −0.44 ns (fail) | 410 MHz (estimate) | n/a | n/a | `acc[0]` → `acc[31]` |
+| Kogge-Stone accumulator | 2.0 ns | **+0.09 ns** | 525 MHz | 1,273 µm² | 0.600 mW at 500 MHz | `B_in[1]` → `prod_reg[15]` |
+| Kogge-Stone everywhere | 1.67 ns | +0.58 ns | 704 MHz (estimate) | 1,525 µm² | 0.756 mW at 600 MHz | `A_in[0]` → `prod_reg[15]` |
+
+### Clock sweep (Kogge-Stone everywhere)
+
+| Clock | Worst slack | Estimated minimum period |
+|---|---|---|
+| 1.42 ns | +0.13 ns | 1.29 ns |
+| 1.30 ns | +0.09 ns | 1.21 ns |
+| 1.20 ns | +0.07 ns | 1.13 ns |
+| **1.10 ns** | **+0.00 ns** | **1.10 ns (converged)** |
+
+**Final PE result:** **912 MHz** at 1.10 ns, 1,676 µm², 1.63 mW at 909 MHz. The critical path is `B_in[0]` → multiplier tree → `prod_reg[15]`.
+
+### PPA comparison
+
+| Version | Fmax | Cell area | Energy per cycle |
+|---|---|---|---|
+| Ripple-carry (2.5 ns) | 403 MHz | 1,064 µm² | 1.14 pJ |
+| Kogge-Stone everywhere (1.67 ns) | ~704 MHz | 1,525 µm² (+43%) | 1.26 pJ (+11%) |
+| Kogge-Stone, clock pushed (1.10 ns) | **912 MHz (2.3×)** | 1,676 µm² (+58%) | 1.79 pJ (+57%) |
+
+- **Changing the adder structure** bought 75% more speed for 43% more area and about 11% more energy per cycle.
+- **Pushing the clock** bought another 30% of speed for 10% more area, but energy per cycle rose 42%. Switching power more than doubled as the tools used bigger gates and more buffers. Past about 700 MHz, each extra MHz costs much more energy.
+- Each time the clock was tightened, the estimated minimum period dropped too. At a tighter target the tools build a faster circuit, which is why the sweep had to be run rather than predicted from one run.
+
+**Caveats:** typical corner only, and the I/O delay is 20% of the clock period, so the input paths' budget shrinks along with the clock. The 4×4 array has not yet been rerun with the Kogge-Stone adders.
+
+Run reports are in `pd/pe/runs/` (`pe_ks_*` folders), with a combined `SUMMARY.txt`.
 
 ## 4×4 array (`array_top`, N = 4)
 
@@ -80,7 +122,7 @@ In the array the critical path's carry steps take about 80 ps per full adder (vs
 
 **Why the area is only about 2% over 16 PEs:** the unused `A_out` and `B_out` flip-flops on the array's edges are removed, and the 3.0 ns clock let the tools use smaller gates than the 2.5 ns PE run. The skid buffer, beat counter and enable buffer trees add only a little on top.
 
-## Screenshots (`pd/images/`)
+## Screenshots (`pd/ScreenShots/`)
 
 - `PE_2p5s_CriticalPathOpenRoad.png`: PE layout with a carry-chain path highlighted
 - `ArrayLayout_3p0s_OpenRoad.png`: full-color 4×4 array layout
@@ -88,6 +130,7 @@ In the array the critical path's carry steps take about 80 ps per full adder (vs
 
 ## Next experiments
 
-1. Replace the hand-built 32-bit ripple adder with `acc + O_ext` and let synthesis choose the adder. Rerun the 2.0 ns PE.
-2. Narrow the accumulator to `16 + $clog2(N)` bits. Measure the change in Fmax and area.
-3. Set a real target (500 MHz for the PE) and close timing against it.
+1. Run the 4×4 array with the Kogge-Stone adders.
+2. Speed up the multiplier, now the critical path: a Wallace or Dadda tree of carry-save adders, or a rebalanced pipeline.
+3. Compare my Kogge-Stone against the adder synthesis builds from `+`, at the same clock.
+4. Narrow the accumulator to `16 + $clog2(N)` bits and measure the change in Fmax and area.

@@ -2,11 +2,11 @@
 
 A parameterized NxN systolic array for signed 8-bit matrix multiplication, designed and implemented in SystemVerilog and taken from RTL to a routed chip layout. The array multiplies two NxN matrices using a grid of N² processing elements (PEs), each built around a pipelined multiply-accumulate (MAC) unit. A single parameter, `N`, sets the array size.
 
-The datapath's additions are built from my own full-adder and ripple-carry adder modules, and the signed 8-bit multiplier is a shift-and-add design rather than Verilog's built-in `*` operator. The one exception is the `+ 1` used to negate the multiplier's final partial product.
+Every addition in the datapath uses an adder I designed rather than Verilog's built-in `+`: first gate-level ripple-carry adders, then a parameterized **Kogge-Stone parallel-prefix adder** that I designed to fix the critical path the physical design flow found. The signed 8-bit multiplier is a shift-and-add design rather than Verilog's `*` operator. The one exception is the `+ 1` used to negate the multiplier's final partial product.
 
-The array sits behind a **valid/ready streaming interface** with a skid buffer, so it tolerates input stalls and output backpressure. The full design was then taken through an **RTL-to-GDS flow with OpenROAD** on the Nangate45 (45 nm) library. See [Physical Design](#physical-design-rtl-to-gds).
+The array sits behind a **valid/ready streaming interface** with a skid buffer, so it tolerates input stalls and output backpressure. The full design was then taken through an **RTL-to-GDS flow with OpenROAD** on the Nangate45 (45 nm) library, where replacing the ripple-carry adders with my Kogge-Stone adder raised the PE's post-route Fmax from **403 MHz to 912 MHz**. See [Physical Design](#physical-design-rtl-to-gds).
 
-The RTL uses ANSI-style ports with `logic` and `always_ff`. The core datapath modules are lint-clean in Vivado, and every remaining lint message is a documented, intentional waiver.
+The RTL uses ANSI-style ports with `logic` and `always_ff`. The original datapath modules are lint-clean in Vivado, and every remaining lint message is a documented, intentional waiver.
 
 This project builds on my previous [8-bit ALU](https://github.com/AlexanderMBell/8-bit-ALU-Verilog) and is my first sequential, clocked digital design.
 
@@ -46,20 +46,24 @@ Each output element is the sum of N signed 8-bit × 8-bit products. Every produc
 
 The design is modular and built bottom-up, with each level instantiating the one below it.
 
-### 1. Full Adder and Ripple-Carry Adders
-- A gate-level full adder built from XOR, AND, and OR operations.
-- 16-bit and 32-bit ripple-carry adders built by chaining full adders with a `generate` loop.
+### 1. Adders: Ripple-Carry, then Kogge-Stone
+- **Original design:** a gate-level full adder built from XOR, AND, and OR operations, chained into 16-bit and 32-bit ripple-carry adders with a `generate` loop. Simple and small, but the carry has to pass through every bit in series.
+- **Current design:** a parameterized **Kogge-Stone parallel-prefix adder** (`kogge_stone #(.WIDTH(n))`), used at 16 bits in the multiplier and 32 bits in the accumulator. It keeps the same ports as the ripple adders, so it dropped in without other changes.
+  - **Level 0:** every bit computes generate (`G = A & B`, this bit makes a carry) and propagate (`P = A ^ B`, this bit passes a carry along).
+  - **Levels 1 to log₂(WIDTH):** each bit merges its group with the group 1, 2, 4, 8, then 16 positions below it, using `G = G_hi | (P_hi & G_lo)` and `P = P_hi & P_lo`. Each level doubles the span each bit covers, and every partial result is shared with the next level instead of recomputed.
+  - **Sum:** after the last level, each bit holds whether a carry comes out of it, so every sum bit is its own `P` XOR the carry from the bit below.
+  - The carry network is 5 levels of small 2-input cells for 32 bits, instead of a 31-step ripple chain, at the cost of more cells and wiring.
 
 ### 2. Signed 8-Bit Multiplier
 - A shift-and-add multiplier for two's-complement signed inputs.
 - The multiplicand is sign-extended to 16 bits, and each bit of the multiplier selects a shifted copy of it as a partial product.
 - Because the MSB of a two's-complement number has a weight of −2⁷, the final partial product is negated (two's complement) instead of added directly. I chose this sign-extension method over taking absolute values and fixing the sign afterward.
-- The eight partial products are summed with seven 16-bit ripple-carry adders arranged as a **3-level adder tree** (8 → 4 → 2 → 1), rather than a 7-deep chain, which shortens the critical path.
+- The eight partial products are summed with seven 16-bit adders (now Kogge-Stone) arranged as a **3-level adder tree** (8 → 4 → 2 → 1), rather than a 7-deep chain, which shortens the critical path.
 
 ### 3. Multiply-Accumulate (MAC) Unit
 - A **two-stage pipeline**:
   - **Stage 1:** multiply the two 8-bit inputs and register the 16-bit product (`prod_reg`).
-  - **Stage 2:** sign-extend the registered product to 32 bits and add it to the accumulator using the 32-bit adder.
+  - **Stage 2:** sign-extend the registered product to 32 bits and add it to the accumulator using the 32-bit Kogge-Stone adder.
 - `valid` is delayed one cycle (`valid_delay`) so it stays aligned with the product it describes.
 - `clear` zeroes the accumulator and kills any product still in the pipeline, so it can't leak into the next sum. It takes priority over the clock enable, so the array can be cleared while frozen.
 - A clock enable, `en`, freezes every register when no data is moving.
@@ -128,7 +132,7 @@ Static timing analysis showed the original critical path ran from a neighboring 
 
 The PE and the full 4×4 array (`array_top`) were taken from RTL to a routed layout with [OpenROAD-flow-scripts](https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts), using the open Nangate45 (45 nm) standard-cell library. The flow is the ORFS default: Yosys synthesis, floorplan, placement, clock tree synthesis, routing, and post-route timing and power analysis. The design configs, SDC constraints, reports and full write-up are in [`pd/`](pd/). See [`pd/RESULTS.md`](pd/RESULTS.md).
 
-### Results (post-route, typical corner)
+### Results with the original ripple-carry adders (post-route, typical corner)
 
 | Design | Clock constraint | Fmax | Cell area | Power |
 |---|---|---|---|---|
@@ -140,9 +144,9 @@ The PE and the full 4×4 array (`array_top`) were taken from RTL to a routed lay
 - Fmax was found by sweeping the clock constraint. The PE passes at 5.0 ns, fails at 2.0 ns (−0.44 ns slack), and passes at 2.5 ns (+0.02 ns slack).
 - About 90% of the array's power goes to the flip-flops and the clock tree, which makes clock gating the obvious power optimization.
 
-### Critical path
+### Critical path (ripple-carry design)
 
-In both designs the critical path is the **32-bit ripple-carry accumulator** in the MAC, from `acc[0]` to `acc[31]`. Synthesis mapped the gate-level adder onto the library's full-adder cells. At 2.5 ns the carry passes through one half adder and 30 `FA_X1` cells at about 73 ps each, which accounts for about 2.2 ns of the 2.52 ns path.
+In both designs the critical path was the **32-bit ripple-carry accumulator** in the MAC, from `acc[0]` to `acc[31]`. Synthesis mapped the gate-level adder onto the library's full-adder cells. At 2.5 ns the carry passes through one half adder and 30 `FA_X1` cells at about 73 ps each, which accounts for about 2.2 ns of the 2.52 ns path.
 
 ![PE critical path highlighted on the layout](pd/ScreenShots/PE_2p5s_CriticalPathOpenRoad.png)
 
@@ -150,13 +154,32 @@ The array is slightly slower than the single PE. The critical logic is the same 
 
 ![4×4 array critical path, metal layers hidden](pd/ScreenShots/Array_3p0s_CriticalPathOpenRoad.png)
 
+### Timing closure with the Kogge-Stone adder
+
+With ripple-carry adders the PE failed a 500 MHz (2.0 ns) target by 0.44 ns. I replaced the adders one at a time, reran every testbench before each physical design run, and then swept the clock to find the new limit. All runs are post-route on Nangate45 at the typical corner.
+
+| Version | Clock | Fmax | Cell area | Power | Energy per cycle |
+|---|---|---|---|---|---|
+| Ripple-carry everywhere | 2.5 ns | 403 MHz | 1,064 µm² | 0.454 mW at 400 MHz | 1.14 pJ |
+| Kogge-Stone accumulator | 2.0 ns ✓ | 525 MHz | 1,273 µm² | 0.600 mW at 500 MHz | 1.20 pJ |
+| Kogge-Stone everywhere | 1.67 ns ✓ | ~704 MHz (estimate) | 1,525 µm² | 0.756 mW at 600 MHz | 1.26 pJ |
+| Kogge-Stone everywhere, clock pushed | 1.10 ns ✓ | **912 MHz** | 1,676 µm² | 1.63 mW at 909 MHz | 1.79 pJ |
+
+- **Swapping the accumulator adder** closed timing at 500 MHz with +0.09 ns of slack. The critical path moved to the multiplier stage (`B_in` → `prod_reg`).
+- **Swapping the multiplier's seven 16-bit adders** as well gave 75% more speed than the ripple design for 43% more area and only about 11% more energy per cycle.
+- **Sweeping the clock** (1.42, 1.30, 1.20, then 1.10 ns, where slack reached exactly 0) found the PE's limit at 912 MHz, 2.3× the ripple design. That last stretch shows diminishing returns: the final 30% of speed cost 42% more energy per cycle, as the tools used bigger, leakier gates and more buffers.
+- The critical path is now the multiplier tree, which adds three Kogge-Stone adders in a row in one cycle.
+
+Two caveats: these are typical-corner results only, and the SDC sets the input and output delay to 20% of the clock period, so the I/O budget shrinks along with the clock. The 4×4 array results above are still from the ripple-carry design.
+
 ## Project Structure
 
 | File | Module | Description |
 |------|--------|-------------|
-| `full_adder.sv` | `full_adder` | Gate-level 1-bit full adder |
-| `adder_16bit.sv` | `adder_16bit` | 16-bit ripple-carry adder |
-| `adder_32bit.sv` | `adder_32bit` | 32-bit ripple-carry adder |
+| `kogge_stone.sv` | `kogge_stone` | Parameterized Kogge-Stone parallel-prefix adder (used at 16 and 32 bits) |
+| `full_adder.sv` | `full_adder` | Gate-level 1-bit full adder (original design) |
+| `adder_16bit.sv` | `adder_16bit` | 16-bit ripple-carry adder (original design, no longer instantiated) |
+| `adder_32bit.sv` | `adder_32bit` | 32-bit ripple-carry adder (original design, no longer instantiated) |
 | `sig_mult_8bit.sv` | `sig_mult_8bit` | Signed 8-bit shift-and-add multiplier with a 3-level adder tree |
 | `MAC.sv` | `mac` | Two-stage pipelined multiply-accumulate unit with 32-bit accumulator |
 | `PE.sv` | `pe` | Processing element: MAC plus pass-through registers |
@@ -164,6 +187,7 @@ The array is slightly slower than the single PE. The critical logic is the same 
 | `skid_buffer.sv` | `skid_buffer` | Parameterized valid/ready skid buffer |
 | `pipe_stage.sv` | `pipe_stage` | Basic valid/ready pipeline stage (the starting point for the skid buffer) |
 | `array_top.sv` | `array_top` | Top level: streaming interface, skid buffer, enable, and beat counter |
+| `kogge_stone_tb.sv` | `kogge_stone_tb` | Randomized Kogge-Stone adder testbench |
 | `sig_mult_8bit_tb.sv` | `sig_mult_8bit_tb` | Exhaustive signed multiplier testbench |
 | `MAC_tb.sv` | `mac_tb` | MAC testbench |
 | `pe_tb.sv` | `pe_tb` | PE testbench |
@@ -174,6 +198,10 @@ The array is slightly slower than the single PE. The critical logic is the same 
 | `pd/` | | OpenROAD configs, SDC constraints, reports, screenshots, and `RESULTS.md` |
 
 ## Verification
+
+### Kogge-Stone Adder: Randomized Testing
+
+The adder testbench is parameterized by the same `WIDTH` as the adder and checks every result against Verilog's `+`, including the carry-out bit. Each run applies the worst case for carries (all ones plus one, where the carry has to travel through every bit) followed by 100,000 random pairs. Result: **100,001 tests, 0 errors** at 8, 16, and 32 bits. After the adder was swapped into the multiplier and MAC, every testbench below was rerun and still passes.
 
 ### Signed Multiplier: Exhaustive Testing
 
@@ -219,7 +247,7 @@ Result: **1,001 matrices, 0 errors** at N = 4 and N = 8, including runs with the
 
 **Simulation**
 1. Open the source files in a simulator that supports SystemVerilog (the design uses packed multidimensional arrays).
-2. Include all design files: `full_adder.sv`, `adder_16bit.sv`, `adder_32bit.sv`, `sig_mult_8bit.sv`, `MAC.sv`, `PE.sv` and `NbyN_Systolic_Array.sv`, plus `skid_buffer.sv` and `array_top.sv` for the streaming top level.
+2. Include all design files: `kogge_stone.sv`, `sig_mult_8bit.sv`, `MAC.sv`, `PE.sv` and `NbyN_Systolic_Array.sv`, plus `skid_buffer.sv` and `array_top.sv` for the streaming top level.
 3. Include the testbench you want to run, select it as the simulation top-level module, and set `parameter N` at the top of the array testbenches to choose the size.
 4. Run the simulation to completion (`run all`) and check the printed `Tests run / Errors` summary.
 
@@ -230,7 +258,7 @@ From an [OpenROAD-flow-scripts](https://github.com/The-OpenROAD-Project/OpenROAD
 ```bash
 cd OpenROAD-flow-scripts/flow
 mkdir -p designs/src/pe designs/nangate45/pe
-cp <this-repo>/{full_adder,adder_16bit,adder_32bit,sig_mult_8bit,MAC,PE}.sv designs/src/pe/
+cp <this-repo>/{kogge_stone,sig_mult_8bit,MAC,PE}.sv designs/src/pe/
 cp <this-repo>/pd/pe/config.mk <this-repo>/pd/pe/constraint.sdc designs/nangate45/pe/
 util/docker_shell make DESIGN_CONFIG=/work/designs/nangate45/pe/config.mk
 ```
@@ -244,6 +272,7 @@ Through this project, I gained practical experience with:
 - Sequential logic, clocking, and registers
 - Synchronous reset, clear, and clock-enable control signals
 - Building a signed multiplier from adders and partial products
+- Parallel-prefix adders: generate and propagate, and how Kogge-Stone computes every carry in log₂(n) levels
 - Two's-complement signed arithmetic and sign extension
 - Choosing datapath widths to prevent overflow
 - Multiply-accumulate units and how they underpin matrix math
@@ -257,13 +286,16 @@ Through this project, I gained practical experience with:
 - Improving Fmax with logic restructuring (adder trees) and pipelining, and keeping control signals aligned with pipelined data
 - The RTL-to-GDS flow: synthesis, floorplanning, placement, clock tree synthesis, and routing
 - Writing SDC constraints and reading post-route timing, area, and power reports
-- PPA trade-offs: tighter clocks cost area and power
+- Timing closure: finding the critical path in a report, fixing it in RTL, and confirming the fix moved the critical path
+- PPA trade-offs: faster adders cost area, and tighter clocks cost energy per operation
 
 Most importantly, this project showed me how the matrix multiplication at the core of machine learning hardware, like Google's TPU, is built from the same full adders as my first ALU, and let me trace a design decision all the way down to picoseconds of delay in a real layout.
 
 ## Next Steps
 
-- Closing timing on the PE at 500 MHz with a faster accumulator (a synthesis-chosen adder, a narrower accumulator, or carry-lookahead)
+- Running the 4×4 array through the flow with the Kogge-Stone adders
+- Speeding up the multiplier, now the critical path, with a Wallace or Dadda tree of carry-save adders, or by rebalancing the pipeline
+- Comparing my Kogge-Stone adder against the adder synthesis builds from `+`, and against a narrower accumulator
 - Porting the physical design flow to ASAP7 (7 nm) and sweeping N
 - Clock gating with the existing enable, since most of the power goes to the flip-flops and clock tree
 - A FIFO on the input, and double buffering so the next matrices load while the current ones compute
