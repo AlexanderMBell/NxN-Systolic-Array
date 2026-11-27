@@ -40,17 +40,17 @@ module sig_mult_8bit
   //Group Independent adders to reduce timing
   
   //Branch 1
-  adder_16bit add01 (.a(R0), .b(R1), .ans(sum01));
-  adder_16bit add23 (.a(R2), .b(R3), .ans(sum23));
-  adder_16bit add45 (.a(R4), .b(R5), .ans(sum45));
-  adder_16bit add67 (.a(R6), .b(R7), .ans(sum67));
+  kogge_stone #(.WIDTH(16)) add01 (.a(R0), .b(R1), .ans(sum01));
+  kogge_stone #(.WIDTH(16)) add23 (.a(R2), .b(R3), .ans(sum23));
+  kogge_stone #(.WIDTH(16)) add45 (.a(R4), .b(R5), .ans(sum45));
+  kogge_stone #(.WIDTH(16)) add67 (.a(R6), .b(R7), .ans(sum67));
   
   //Branch 2
-  adder_16bit add0123 (.a(sum01[15:0]), .b(sum23[15:0]), .ans(sum0123));
-  adder_16bit add4567 (.a(sum45[15:0]), .b(sum67[15:0]), .ans(sum4567));
+  kogge_stone #(.WIDTH(16)) add0123 (.a(sum01[15:0]), .b(sum23[15:0]), .ans(sum0123));
+  kogge_stone #(.WIDTH(16)) add4567 (.a(sum45[15:0]), .b(sum67[15:0]), .ans(sum4567));
   
   //Branch 3
-  adder_16bit addF (.a(sum0123[15:0]), .b(sum4567[15:0]), .ans(sumF));
+  kogge_stone #(.WIDTH(16)) addF (.a(sum0123[15:0]), .b(sum4567[15:0]), .ans(sumF));
   assign O = sumF[15:0];
     
 endmodule
