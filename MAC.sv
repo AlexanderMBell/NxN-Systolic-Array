@@ -27,7 +27,7 @@ module mac
   assign O_ext = {{16{prod_reg[15]}},prod_reg};
   
   //Add to sum
-  adder_32bit add (
+   kogge_stone #(.WIDTH(32)) add (
     .a(acc),
     .b(O_ext),
     .ans(sum)
